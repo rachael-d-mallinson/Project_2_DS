@@ -1,0 +1,81 @@
+/**
+	 * Evaluates a postfix expression
+	 * @param postfixExp: postfix expression with all integer operands
+	 * @return: the evaluations result
+	 * @throws: IllegalArgumentException: divide-by-zero
+	 */
+	public static int evaluate(String postfixExp) {
+		Stack<Integer> stack = new Stack<>();
+		Scanner scanner = new Scanner(postfixExp);
+		while (scanner.hasNext()) {
+			String token = scanner.next();
+			// Operand
+			if (Character.isDigit(token.charAt(0))) {
+				stack.push(Integer.valueOf(token));
+			} else { // Operator
+				int right = stack.pop();
+				int left = stack.pop();
+				if (token.equals("+")) { stack.push(left + right); }
+				if (token.equals("-")) { stack.push(left - right); }
+				if (token.equals("*")) { stack.push(left * right); }
+				if (token.equals("/")) {
+					if (right == 0) {
+						throw new IllegalArgumentException("Divide-by-zero");
+					}
+					stack.push(left / right); 
+				}
+				
+			}
+		}
+		scanner.close();
+		return stack.peek();
+	} // Time complexity O(n)
+	
+	/**
+	 * Returns the precedence of an operator
+	 * @param oper: The operator to check
+	 * @return: The precedence of the operator
+	 * @throws: IllegalArgumentException: operator not supported
+	 */
+	private static int precedence(String oper) {
+		 if (oper.equals("*") || oper.equals("/")) { return 6; }
+		 if (oper.equals("+") || oper.equals("-")) { return 5; }
+		 throw new IllegalArgumentException("Operator not supported");	 
+	}
+	
+	/**
+	 * Converts an infix expression to its equivalent postfix expression
+	 * @param inficExp: An infix expression
+	 * @return: Equivalent postfix expression
+	 */
+	public static String infixToPostfix(String infixExp) {
+		Scanner scanner = new Scanner(infixExp);
+		Stack<String> stack = new Stack<>();
+		StringBuilder postfix = new StringBuilder();
+		
+		while (scanner.hasNext()) {
+			String token = scanner.next();
+			
+			if (Character.isDigit(token.charAt(0))) { //operand
+				postfix.append(token).append(' ');
+			} else if (token.equals("(")) {
+				stack.push(token);
+			} else if (token.equals(")")) {
+				while (!stack.peek().equals("(")) {
+					postfix.append(stack.pop()).append(' ');
+				}
+				stack.pop(); // Pop opening delimiter from stack
+			} else {
+				while (!stack.isEmpty() && !stack.peek().equals("(") && precedence(token) <= precedence(stack.peek())) {
+					postfix.append(stack.pop()).append(' ');
+				}
+				stack.push(token);
+			}
+		}
+		
+		while (!stack.isEmpty()) {
+			postfix.append(stack.pop()).append(' ');
+		}
+		
+		scanner.close();
+		return postfix.toString();
