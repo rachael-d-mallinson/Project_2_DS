@@ -1,71 +1,81 @@
+package infixExpressionParcer;
+
+import java.io.FileInputStream;
+import java.util.Scanner;
+import java.util.Stack;
+
+public class infix_parcer_methods {
+
    /**
-    * Returns the precedence of an operator
-    * @param oper: The operator to check
-    * @return: The precedence of the operator
-    * @throws: IllegalArgumentException: operator not supported
-    */
-    private static int precedence(String oper) {
-	if (oper.equals("^")) { return 7; }                                                                  //power
-	if (oper.equals("*") || oper.equals("/") || oper.equals("%") { return 6; }                           //arithmetic
-	if (oper.equals("+") || oper.equals("-")) { return 5; }                                              //arithmetic
-	if (oper.equals(">") || oper.equals(">=") || oper.equals("<") || oper.equals("<=")) { return 4; }    //comparison
-	if (oper.equals("==") || oper.equals("!=)) { return 3; }                                             //equality comparison
-	if (oper.equals("&&") { return 2; }                                                                  //logical AND
-	if (oper.equals("||") { return 1; }                                                                  //logical OR
-         
-	throw new IllegalArgumentException("Operator not supported");	 
-     }
-      
-   /**
-    * Converts an infix expression to its equivalent postfix expression
-    * @param inficExp: An infix expression
-    * @return: Equivalent postfix expression
-    */
-    public static String infixToPostfix(String infixExp) {
-    	Scanner scanner = new Scanner(infixExp);
-	Stack<String> stack = new Stack<>();
-	StringBuilder postfix = new StringBuilder();
-        
-	while (scanner.hasNext()) {
-		String token = scanner.next();
-		
-		if (Character.isDigit(token.charAt(0))) { //operand
-			postfix.append(token).append(' ');
-		} else if (token.equals("(")) {
-			stack.push(token);
-		} else if (token.equals(")")) {
-			while (!stack.peek().equals("(")) {
-				postfix.append(stack.pop()).append(' ');
-			}
-                        stack.pop(); // Pop opening delimiter from stack
-		} else {
-			while (!stack.isEmpty() && !stack.peek().equals("(") && precedence(token) <= precedence(stack.peek())) {
-				postfix.append(stack.pop()).append(' ');
-			}
-			stack.push(token);
-		}
-	 }
-	 
-	 while (!stack.isEmpty()) {
-	 	postfix.append(stack.pop()).append(' ');
-    	}
-	scanner.close();
-	return postfix.toString();
-	
+	* Returns the precedence of an operator
+	* @param oper: The operator to check
+	* @return: The precedence of the operator
+	* @throws: IllegalArgumentException: operator not supported
+	*/
+	private static int precedence(String oper) {
+		if (oper.equals("^")) { return 7; }                                                                  //power
+		if (oper.equals("*") || oper.equals("/") || oper.equals("%")) { return 6; }                           //arithmetic
+		if (oper.equals("+") || oper.equals("-")) { return 5; }                                              //arithmetic
+		if (oper.equals(">") || oper.equals(">=") || oper.equals("<") || oper.equals("<=")) { return 4; }    //comparison
+		if (oper.equals("==") || oper.equals("!=")) { return 3; }                                             //equality comparison
+		if (oper.equals("&&")) { return 2; }                                                                  //logical AND
+		if (oper.equals("||")) { return 1; }                                                                  //logical OR
+	         
+		throw new IllegalArgumentException("Operator not supported");	 
+	}
+	      
 	/**
-	 * Evaluates a postfix expression
-	 * @param postfixExp: postfix expression with all integer operands
-	 * @return: the evaluations result
-	 * @throws: IllegalArgumentException: divide-by-zero
+	 * Converts an infix expression to its equivalent postfix expression
+	 * @param inficExp: An infix expression
+	 * @return: Equivalent postfix expression
 	 */
-	public static int evaluate(String postfixExp) {
-		Stack<Integer> stack = new Stack<>();
-		Scanner scanner = new Scanner(postfixExp);
-		while (scanner.hasNext()) {
-			String token = scanner.next();
-			// Operand
-			if (Character.isDigit(token.charAt(0))) {
-				stack.push(Integer.valueOf(token));
+	 public static String infixToPostfix(String infixExp) {
+		 Scanner scanner = new Scanner(infixExp);
+		 Stack<String> stack = new Stack<>();
+		 StringBuilder postfix = new StringBuilder();
+		 
+		 while (scanner.hasNext()) {
+			 String token = scanner.next();
+			 
+			 if (Character.isDigit(token.charAt(0))) { //operand
+				 postfix.append(token).append(' ');
+			 } else if (token.equals("(")) {
+				 stack.push(token);
+			 } else if (token.equals(")")) {
+				 while (!stack.peek().equals("(")) {
+					 postfix.append(stack.pop()).append(' ');
+				 }
+	                        stack.pop(); // Pop opening delimiter from stack
+			 } else {
+				 while (!stack.isEmpty() && !stack.peek().equals("(") && precedence(token) <= precedence(stack.peek())) {
+					 postfix.append(stack.pop()).append(' ');
+				 }
+				 stack.push(token);
+			 }
+		 }
+		 
+		 while (!stack.isEmpty()) {
+		 	postfix.append(stack.pop()).append(' ');
+	     }
+		 
+		scanner.close();
+		return postfix.toString();
+	 }
+	 /**
+	  * Evaluates a postfix expression
+	  * @param postfixExp: postfix expression with all integer operands
+	  * @return: the evaluations result
+	  * @throws: IllegalArgumentException: divide-by-zero
+	  */
+	 public static int evaluate(String postfixExp) {
+		 Stack<Integer> stack = new Stack<>();
+		 Scanner scanner = new Scanner(postfixExp);
+		 
+		 while (scanner.hasNext()) {
+			 String token = scanner.next();
+			 // Operand
+			 if (Character.isDigit(token.charAt(0))) {
+				 stack.push(Integer.valueOf(token));
 			} else { // Operator
 				int right = stack.pop();
 				int left = stack.pop();
@@ -78,11 +88,41 @@
 					}
 					stack.push(left / right); 
 				}
-				
+					
 				//Need more conditions for comparison, equality comparison, logical AND, logical OR
-				
+					
 			}
 		}
 		scanner.close();
 		return stack.peek();
-	} // Time complexity O(n)
+		} // Time complexity O(n)
+	 
+	 
+	 //main program
+	 public static void main(String[] args) {
+	 	//reads in the expression
+		FileInputStream inputFile = new FileInputStream("InfixExpression.txt");
+		Scanner initialScan = new Scanner(inputFile);
+			
+		//read in the expression, getting rid of any spaces
+		String infixExp = "hello dear    this is me.";
+		StringBuilder infixExpToConvert = new StringBuilder();
+			
+		for (int i =0; i < infixExp.length(); i++) {
+			if (infixExp.charAt(i) == ' ') { continue; } 		 //if there is a space, skip it
+			else {infixExpToConvert.append(infixExp.charAt(i));} //append the character to string
+		}
+			
+		String postfixToEvaluate = infixToPostfix(infixExpToConvert.toString());
+			
+		//write results to console
+		System.out.println("   Infix Expression Parcer");
+		System.out.println("    Expression given: " + infixExpToConvert);
+		System.out.println("Evaluated Expression: " + evaluate(postfixToEvaluate));	
+			
+		//never forget to close	
+		initialScan.close();
+		inputFile.close();
+	}
+
+}		
