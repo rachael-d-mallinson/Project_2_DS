@@ -121,8 +121,33 @@ public class infix_parcer_methods {
 		}
 		scanner.close();
 		return stack.peek();
-		} // Time complexity O(n)
-	 
+	} // Time complexity O(n)
+	
+	 /**
+	 * Adds spaces to an infix expression with no spaces
+	 * @param exp: Expression to be parsed
+	 * @return: A new expression with spaces added
+	 */
+	public static String addSpaces(String infixExp) {
+		// Create a new StringBuilder
+		StringBuilder newExp = new StringBuilder();
+		// Iterate through the string
+		for (int i = 0; i < infixExp.length(); i++) {
+			// If the character is a digit append it to the StringBuilder
+			if (Character.isDigit(infixExp.charAt(i))) {
+				newExp.append(infixExp.charAt(i));
+				// Check if next character is also a digit, if not, add a space
+				if ((i != infixExp.length() - 1) && !Character.isDigit(infixExp.charAt(i + 1))) {
+					newExp.append(" ");
+				}
+			} else {
+				// Any character that is not a digit is added with a space
+				newExp.append(infixExp.charAt(i) + " ");
+			}
+		}
+		
+		return newExp.toString();
+	}
 	 
 	 //main program
 	 public static void main(String[] args) throws IOException {
@@ -135,7 +160,10 @@ public class infix_parcer_methods {
 			String infixExp = scanner.nextLine();
 			//StringBuilder infixExpToConvert = new StringBuilder();
 			
+			// Remove spaces from expression
 			infixExp = infixExp.replace(" ", "");
+			// Add spaces back into expression
+			infixExp = addSpaces(infixExp);
 			
 				
 			String postfixToEvaluate = infixToPostfix(infixExp);
