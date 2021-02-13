@@ -1,5 +1,6 @@
 package infixExpressionParcer;
 
+import java.io.IOException;
 import java.io.FileInputStream;
 import java.util.Scanner;
 import java.util.Stack;
@@ -99,7 +100,7 @@ public class infix_parcer_methods {
 	 
 	 
 	 //main program
-	 public static void main(String[] args) {
+	 public static void main(String[] args) throws IOException {
 	 	//reads in the expression
 		FileInputStream inputFile = new FileInputStream("InfixExpression.txt");
 		Scanner initialScan = new Scanner(inputFile);
