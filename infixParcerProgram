@@ -89,8 +89,33 @@ public class infix_parcer_methods {
 					}
 					stack.push(left / right); 
 				}
+				if (token.equals("<")) {  
+					if (left < right) {stack.push(1); }
+					else if (left >= right) { stack.push(0);}
+				}
+				if (token.equals(">")) {
+					if (left > right) {stack.push(1); }
+					else if (left <= right) { stack.push(0);}
+				}
+				if (token.equals(">=")) {
+					if (left >= right) {stack.push(1); }
+					else if (left < right) { stack.push(0);}
+				}
+				if (token.equals("<=")) {
+					if (left >= right) {stack.push(1); }
+					else if (left > right) { stack.push(0);}
+				}
+				if (token.equals("==")) {
+					if (left == right) {stack.push(1); }
+					else { stack.push(0);}
+				}
+				if (token.equals("!=")) {
+					if (left != right) {stack.push(1); }
+					else { stack.push(0);}
+				}
+				//logical OR and AND
 					
-				//Need more conditions for comparison, equality comparison, logical AND, logical OR
+				
 					
 			}
 		}
