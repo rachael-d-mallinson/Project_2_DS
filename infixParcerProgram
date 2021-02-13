@@ -103,23 +103,28 @@ public class infix_parcer_methods {
 	 public static void main(String[] args) throws IOException {
 	 	//reads in the expression
 		FileInputStream inputFile = new FileInputStream("InfixExpression.txt");
-		Scanner initialScan = new Scanner(inputFile);
-			
-		//read in the expression, getting rid of any spaces
-		String infixExp = initialScan.nextLine();
+		Scanner scanner = new Scanner(inputFile);
 		
-		// Remove any whitespace
-		infixExp = infixExp.replace(" ", "");
+		while (scanner.hasNext()) {
+			//read in the expression, getting rid of any spaces
+			String infixExp = scanner.nextLine();
+			//StringBuilder infixExpToConvert = new StringBuilder();
 			
-		String postfixToEvaluate = infixToPostfix(infixExp);
+			infixExp = infixExp.replace(" ", "");
 			
-		//write results to console
-		System.out.println("   Infix Expression Parcer");
-		System.out.println("    Expression given: " + infixExpToConvert);
-		System.out.println("Evaluated Expression: " + evaluate(postfixToEvaluate));	
+				
+			String postfixToEvaluate = infixToPostfix(infixExp);
+				
+			//write results to console
+			System.out.println("   Infix Expression Parcer");
+			System.out.println("   Expression given: " + infixExp);
+			System.out.println(postfixToEvaluate);
+			System.out.println("Evaluated Expression: " + evaluate(postfixToEvaluate));	
+		}
+		
 			
 		//never forget to close	
-		initialScan.close();
+		scanner.close();
 		inputFile.close();
 	}
 
