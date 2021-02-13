@@ -107,14 +107,11 @@ public class infix_parcer_methods {
 			
 		//read in the expression, getting rid of any spaces
 		String infixExp = initialScan.nextLine();
-		StringBuilder infixExpToConvert = new StringBuilder();
+		
+		// Remove any whitespace
+		infixExp = infixExp.replace(" ", "");
 			
-		for (int i =0; i < infixExp.length(); i++) {
-			if (infixExp.charAt(i) == ' ') { continue; } 		 //if there is a space, skip it
-			else {infixExpToConvert.append(infixExp.charAt(i));} //append the character to string
-		}
-			
-		String postfixToEvaluate = infixToPostfix(infixExpToConvert.toString());
+		String postfixToEvaluate = infixToPostfix(infixExp);
 			
 		//write results to console
 		System.out.println("   Infix Expression Parcer");
