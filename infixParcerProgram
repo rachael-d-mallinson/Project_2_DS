@@ -113,16 +113,14 @@ public class infix_parcer_methods {
 					if (left != right) {stack.push(1); }
 					else { stack.push(0);}
 				}
-				if (operator.equals("||")) {
+				if (token.equals("||")) {
 					if (left != 0 || right != 0) { stack.push(1); } 
 					else { stack.push(0); }
 				} 	
-				else if (operator.equals("&&")) {
+				else if (token.equals("&&")) {
 					if (left != 0 && right != 0) { stack.push(1); } 	
 					else { stack.push(0); }
-			} // Can't keep track of curly braces!
-					
-				
+				} 	
 					
 			}
 		}
