@@ -26,43 +26,56 @@ public class infix_parcer_methods {
 	}
 	      
 	/**
-	 * Converts an infix expression to its equivalent postfix expression
-	 * @param inficExp: An infix expression
-	 * @return: Equivalent postfix expression
+	 * Converts an infix expression to postfix expression.
+	 * 
+	 * @param infixExp: an infix expression with tokens separated by whitespaces
+	 * @return: resulting postfix expression with tokens separated by whitespaces
 	 */
-	 public static String infixToPostfix(String infixExp) {
-		 Scanner scanner = new Scanner(infixExp);
-		 Stack<String> stack = new Stack<>();
-		 StringBuilder postfix = new StringBuilder();
-		 
-		 while (scanner.hasNext()) {
-			 String token = scanner.next();
-			 
-			 if (Character.isDigit(token.charAt(0))) { //operand
-				 postfix.append(token).append(' ');
-			 } else if (token.equals("(")) {
-				 stack.push(token);
-			 } else if (token.equals(")")) {
-				 while (!stack.peek().equals("(")) {
-					 postfix.append(stack.pop()).append(' ');
-				 }
-	                        stack.pop(); // Pop opening delimiter from stack
-			 } else {
-				 while (!stack.isEmpty() && !stack.peek().equals("(") && precedence(token) <= precedence(stack.peek())) {
-					 postfix.append(stack.pop()).append(' ');
-				 }
-				 stack.push(token);
-			 }
-		 }
-		 
-		 while (!stack.isEmpty()) {
-		 	postfix.append(stack.pop()).append(' ');
-	     }
-		 
+	public static String infixToPostfix(String infixExp) {
+		Scanner scanner = new Scanner(infixExp);
+		// Initialize a stack.
+		Stack<String> stack = new Stack<>();
+		// Initialize the postfix expression.
+		StringBuilder postfixExp = new StringBuilder();
+		// Parse each token in the infix expression.
+		while (scanner.hasNext()) {
+			String token = scanner.next();
+			// If the current token is an operand, append it to the postfix expression string
+			if (Character.isDigit(token.charAt(0)) || (token.charAt(0) == '-' && token.length() > 1)) {
+				postfixExp.append(token).append(' ');
+			}
+			// If the current token is opening parenthesis, push it onto the stack
+			else if (token.equals("(")) {
+				stack.push(token);
+			}
+			// The current token is closing parenthesis
+			else if (token.equals(")")) {
+				// Pop all operators from the stack, until an opening parenthesis is seen on top of the stack
+				// Append each popped operator to the postfix expression string
+				while (!stack.peek().equals("(")) {
+					postfixExp.append(stack.pop()).append(' ');
+				}
+				// Pop the opening parenthesis from the stack
+				stack.pop();
+			} else {
+				// The current token is an operator
+				while (!stack.isEmpty() && !stack.peek().equals("(") && precedence(token) <= precedence(stack.peek())) {
+					postfixExp.append(stack.pop()).append(' ');
+				}
+				// Push the current operator onto the stack
+				stack.push(token);
+			}
+		}
+		// Pop the remaining operators from the stack and append them to the postfix expression string.
+		while (!stack.isEmpty()) {
+			postfixExp.append(stack.pop()).append(' ');
+		}
 		scanner.close();
-		return postfix.toString();
-	 }
-	 /**
+		return postfixExp.toString();
+	} // Time complexity: O(n)
+	
+
+	/**
 	  * Evaluates a postfix expression
 	  * @param postfixExp: postfix expression with all integer operands
 	  * @return: the evaluations result
@@ -74,44 +87,47 @@ public class infix_parcer_methods {
 		 
 		 while (scanner.hasNext()) {
 			 String token = scanner.next();
-			 // Operand
-			 if (Character.isDigit(token.charAt(0))) {
+			 // If the token in an operand
+			 if (Character.isDigit(token.charAt(0)) || (token.charAt(0) == '-' && token.length() > 1)) {
 				 stack.push(Integer.valueOf(token));
-			} else { // Operator
+			} else { // The token is an operator
 				int right = stack.pop();
 				int left = stack.pop();
+				if (token.equals("^")) { stack.push((int)Math.pow(left,  right)); }
 				if (token.equals("+")) { stack.push(left + right); }
 				if (token.equals("-")) { stack.push(left - right); }
 				if (token.equals("*")) { stack.push(left * right); }
 				if (token.equals("/")) {
 					if (right == 0) {
-						throw new IllegalArgumentException("Divide-by-zero");
-					}
-					stack.push(left / right); 
+						System.out.println("Divide-by-zero error, could not evaluate expression.");
+						return 0;
+						//throw new IllegalArgumentException("Divide-by-zero");
+					} else { stack.push(left / right); }
 				}
+				if (token.equals("%")) { stack.push(left % right); }
 				if (token.equals("<")) {  
 					if (left < right) {stack.push(1); }
-					else if (left >= right) { stack.push(0);}
+					else if (left >= right) { stack.push(0); }
 				}
 				if (token.equals(">")) {
 					if (left > right) {stack.push(1); }
-					else if (left <= right) { stack.push(0);}
+					else if (left <= right) { stack.push(0); }
 				}
 				if (token.equals(">=")) {
 					if (left >= right) {stack.push(1); }
-					else if (left < right) { stack.push(0);}
+					else if (left < right) { stack.push(0); }
 				}
 				if (token.equals("<=")) {
 					if (left >= right) {stack.push(1); }
-					else if (left > right) { stack.push(0);}
+					else if (left > right) { stack.push(0); }
 				}
 				if (token.equals("==")) {
 					if (left == right) {stack.push(1); }
-					else { stack.push(0);}
+					else { stack.push(0); }
 				}
 				if (token.equals("!=")) {
 					if (left != right) {stack.push(1); }
-					else { stack.push(0);}
+					else { stack.push(0); }
 				}
 				if (token.equals("||")) {
 					if (left != 0 || right != 0) { stack.push(1); } 
@@ -120,18 +136,17 @@ public class infix_parcer_methods {
 				else if (token.equals("&&")) {
 					if (left != 0 && right != 0) { stack.push(1); } 	
 					else { stack.push(0); }
-				} 	
-					
+				} 				
 			}
 		}
 		scanner.close();
-		return stack.peek();
+		return stack.peek();	
 	} // Time complexity O(n)
 	
-	 /**
+	/**
 	 * Adds spaces to an infix expression with no spaces
 	 * @param exp: Expression to be parsed
-	 * @return: A new expression with spaces added
+	 * @return: A new expression with spaces added between all operands and operators
 	 */
 	public static String addSpaces(String infixExp) {
 		// Create a new StringBuilder
@@ -146,43 +161,61 @@ public class infix_parcer_methods {
 					newExp.append(" ");
 				}
 			} else {
-				// Any character that is not a digit is added with a space
-				newExp.append(infixExp.charAt(i) + " ");
+				// If the operand is a negative number
+				if (infixExp.charAt(i) == '-') {
+					if (!Character.isDigit(infixExp.charAt(i - 1))) {
+						newExp.append(infixExp.charAt(i));
+					} else { newExp.append(infixExp.charAt(i) + " "); }
+				// If the operator is a double operator make sure to include both before adding a space
+				} else if (infixExp.charAt(i) == '=' || infixExp.charAt(i) == '!' || infixExp.charAt(i) == '&' ||
+						infixExp.charAt(i) == '|') {
+					newExp.append(String.format("%s%s ", infixExp.charAt(i), infixExp.charAt(i + 1)));
+					// manually advance i
+					i++;	
+				} else if (infixExp.charAt(i) == '>' || infixExp.charAt(i) == '<') {
+					if (infixExp.charAt(i + 1) == '=') {
+						newExp.append(String.format("%s%s ", infixExp.charAt(i), infixExp.charAt(i + 1)));
+						// manually advance i
+						i++;
+					} else { newExp.append(infixExp.charAt(i) + " "); }
+				} else {
+					// Any character that is not a digit is added with a space
+					newExp.append(infixExp.charAt(i) + " ");
+				}
 			}
 		}
-		
 		return newExp.toString();
 	}
 	 
-	 //main program
-	 public static void main(String[] args) throws IOException {
-	 	//reads in the expression
+	// main program
+	public static void main(String[] args) throws IOException {
+		// reads in the expression
 		FileInputStream inputFile = new FileInputStream("InfixExpression.txt");
 		Scanner scanner = new Scanner(inputFile);
 		
+		System.out.println("Infix Expression Parcer");
 		while (scanner.hasNext()) {
-			//read in the expression
-			String infixExp = scanner.nextLine();
-			
-			// Remove spaces from expression
+			System.out.println();
+			// read in the expression
+			String infixExp = scanner.nextLine(); 
+			System.out.println("Expression given: " + infixExp);
+
 			infixExp = infixExp.replace(" ", "");
-			// Add spaces back into expression
 			infixExp = addSpaces(infixExp);
-			
-				
+			System.out.println("Infix Expression: " + infixExp);
+
 			String postfixToEvaluate = infixToPostfix(infixExp);
-				
-			//write results to console
-			System.out.println("   Infix Expression Parcer");
-			System.out.println("   Expression given: " + infixExp);
-			System.out.println(postfixToEvaluate);
-			System.out.println("Evaluated Expression: " + evaluate(postfixToEvaluate));	
-		}
-		
+
+			// write results to console
 			
-		//never forget to close	
+			
+			System.out.println("Postfix expression: " + postfixToEvaluate);
+			System.out.println("Evaluated Expression: " + evaluate(postfixToEvaluate));
+		}
+
+		// never forget to close
 		scanner.close();
 		inputFile.close();
 	}
-
-}		
+	
+}
