@@ -161,9 +161,8 @@ public class infix_parcer_methods {
 		Scanner scanner = new Scanner(inputFile);
 		
 		while (scanner.hasNext()) {
-			//read in the expression, getting rid of any spaces
+			//read in the expression
 			String infixExp = scanner.nextLine();
-			//StringBuilder infixExpToConvert = new StringBuilder();
 			
 			// Remove spaces from expression
 			infixExp = infixExp.replace(" ", "");
