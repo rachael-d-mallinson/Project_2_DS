@@ -195,26 +195,29 @@ public class infix_parcer_methods {
 		System.out.println("Infix Expression Parcer");
 		while (scanner.hasNext()) {
 			System.out.println();
-			// read in the expression
+			// Read in the expression
 			String infixExp = scanner.nextLine(); 
-			System.out.println("Expression given: " + infixExp);
 
+			// Eliminate any blank lines in the inputFile
+			while (infixExp.isBlank()) { infixExp = scanner.nextLine(); }
+			
+			System.out.println("Expression given: " + infixExp);
+		
+			// Remove spaces from each expression
 			infixExp = infixExp.replace(" ", "");
+			
+			// Add spaces in-between each operand and operator
 			infixExp = addSpaces(infixExp);
 			System.out.println("Infix Expression: " + infixExp);
 
 			String postfixToEvaluate = infixToPostfix(infixExp);
 
-			// write results to console
-			
-			
+			// Write results to console
 			System.out.println("Postfix expression: " + postfixToEvaluate);
 			System.out.println("Evaluated Expression: " + evaluate(postfixToEvaluate));
 		}
-
-		// never forget to close
+		// Close the scanner and input file
 		scanner.close();
 		inputFile.close();
 	}
-	
 }
