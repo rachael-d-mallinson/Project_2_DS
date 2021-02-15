@@ -26,8 +26,7 @@ public class infix_parcer_methods {
 	}
 	      
 	/**
-	 * Converts an infix expression to postfix expression.
-	 * 
+	 * Converts an infix expression to postfix expression
 	 * @param infixExp: an infix expression with tokens separated by whitespaces
 	 * @return: resulting postfix expression with tokens separated by whitespaces
 	 */
