@@ -16,8 +16,6 @@ Design Explanation
   Then we  convert our infix expression (infixExp) to a postfix expression. In this method,  we use a stack to store our operands and operators, until it’s time to output them to the postfix expression in the correct order. In order to do this accurately, we set precedences for each of the operators. This helps us to tell the program the correct order that the operators or operands should be placed.  
   Lastly, we evaluate the postfix expression based on the order of operations made clear by the postfix expression and output it to the standard console. 
 
-
-
 How to use the Infix Expression Parcer:
 1) Launch the program
 2) Name your input file "InfixExpression.txt"
