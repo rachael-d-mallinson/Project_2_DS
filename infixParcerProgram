@@ -14,10 +14,10 @@ public class infix_parcer_methods {
 	* @throws: IllegalArgumentException: operator not supported
 	*/
 	private static int precedence(String oper) {
-		if (oper.equals("^")) { return 7; }                                                                  //power
+		if (oper.equals("^")) { return 7; }                                                                   //power
 		if (oper.equals("*") || oper.equals("/") || oper.equals("%")) { return 6; }                           //arithmetic
-		if (oper.equals("+") || oper.equals("-")) { return 5; }                                              //arithmetic
-		if (oper.equals(">") || oper.equals(">=") || oper.equals("<") || oper.equals("<=")) { return 4; }    //comparison
+		if (oper.equals("+") || oper.equals("-")) { return 5; }                                               //arithmetic
+		if (oper.equals(">") || oper.equals(">=") || oper.equals("<") || oper.equals("<=")) { return 4; }     //comparison
 		if (oper.equals("==") || oper.equals("!=")) { return 3; }                                             //equality comparison
 		if (oper.equals("&&")) { return 2; }                                                                  //logical AND
 		if (oper.equals("||")) { return 1; }                                                                  //logical OR
