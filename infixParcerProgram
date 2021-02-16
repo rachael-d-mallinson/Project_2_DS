@@ -1,7 +1,7 @@
 package infixExpressionParcer;
 
-import java.io.IOException;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -22,11 +22,12 @@ public class infix_parcer_methods {
 		if (oper.equals("&&")) { return 2; }                                                                  //logical AND
 		if (oper.equals("||")) { return 1; }                                                                  //logical OR
 	         
-		throw new IllegalArgumentException("Operator not supported");	 
+		else { return 0; }	 
 	}
 	      
 	/**
-	 * Converts an infix expression to postfix expression
+	 * Converts an infix expression to postfix expression.
+	 * 
 	 * @param infixExp: an infix expression with tokens separated by whitespaces
 	 * @return: resulting postfix expression with tokens separated by whitespaces
 	 */
@@ -71,7 +72,7 @@ public class infix_parcer_methods {
 		}
 		scanner.close();
 		return postfixExp.toString();
-	} // Time complexity: O(n)
+	} 
 	
 
 	/**
@@ -80,7 +81,7 @@ public class infix_parcer_methods {
 	  * @return: the evaluations result
 	  * @throws: IllegalArgumentException: divide-by-zero
 	  */
-	 public static int evaluate(String postfixExp) {
+	 public static String evaluate(String postfixExp) {
 		 Stack<Integer> stack = new Stack<>();
 		 Scanner scanner = new Scanner(postfixExp);
 		 
@@ -92,15 +93,14 @@ public class infix_parcer_methods {
 			} else { // The token is an operator
 				int right = stack.pop();
 				int left = stack.pop();
+				if (precedence(token) == 0) { return String.format("%s operator not supported.", token); }
 				if (token.equals("^")) { stack.push((int)Math.pow(left,  right)); }
 				if (token.equals("+")) { stack.push(left + right); }
 				if (token.equals("-")) { stack.push(left - right); }
 				if (token.equals("*")) { stack.push(left * right); }
 				if (token.equals("/")) {
 					if (right == 0) {
-						System.out.println("Divide-by-zero error, could not evaluate expression.");
-						return 0;
-						//throw new IllegalArgumentException("Divide-by-zero");
+						return "Divide-by-zero error, could not evaluate expression.";
 					} else { stack.push(left / right); }
 				}
 				if (token.equals("%")) { stack.push(left % right); }
@@ -117,7 +117,7 @@ public class infix_parcer_methods {
 					else if (left < right) { stack.push(0); }
 				}
 				if (token.equals("<=")) {
-					if (left >= right) {stack.push(1); }
+					if (left <= right) {stack.push(1); }
 					else if (left > right) { stack.push(0); }
 				}
 				if (token.equals("==")) {
@@ -139,8 +139,8 @@ public class infix_parcer_methods {
 			}
 		}
 		scanner.close();
-		return stack.peek();	
-	} // Time complexity O(n)
+		return stack.peek().toString();	
+	} 
 	
 	/**
 	 * Adds spaces to an infix expression with no spaces
@@ -162,7 +162,9 @@ public class infix_parcer_methods {
 			} else {
 				// If the operand is a negative number
 				if (infixExp.charAt(i) == '-') {
-					if (!Character.isDigit(infixExp.charAt(i - 1))) {
+					if (i == 0) {
+						newExp.append(infixExp.charAt(i));
+					} else if (!Character.isDigit(infixExp.charAt(i - 1)) && infixExp.charAt(i - 1) != ')') {
 						newExp.append(infixExp.charAt(i));
 					} else { newExp.append(infixExp.charAt(i) + " "); }
 				// If the operator is a double operator make sure to include both before adding a space
@@ -192,32 +194,29 @@ public class infix_parcer_methods {
 		FileInputStream inputFile = new FileInputStream("InfixExpression.txt");
 		Scanner scanner = new Scanner(inputFile);
 		
-		System.out.println("Infix Expression Parcer");
+		System.out.println("Infix Expression Parcer"); // Header
 		while (scanner.hasNext()) {
 			System.out.println();
-			// Read in the expression
+			// read in the expression
 			String infixExp = scanner.nextLine(); 
-
-			// Eliminate any blank lines in the inputFile
-			while (infixExp.isBlank()) { infixExp = scanner.nextLine(); }
-			
+			// Output given expression
 			System.out.println("Expression given: " + infixExp);
-		
-			// Remove spaces from each expression
-			infixExp = infixExp.replace(" ", "");
 			
-			// Add spaces in-between each operand and operator
+			// Remove any spaces from the user
+			infixExp = infixExp.replace(" ", "");
+			// Add spaces so the expression can be read by the infixToPostfix method
 			infixExp = addSpaces(infixExp);
-			System.out.println("Infix Expression: " + infixExp);
-
+			
+			// Convert from infix to postfix
 			String postfixToEvaluate = infixToPostfix(infixExp);
 
-			// Write results to console
-			System.out.println("Postfix expression: " + postfixToEvaluate);
+			// Evaluate expression and write results to console
 			System.out.println("Evaluated Expression: " + evaluate(postfixToEvaluate));
 		}
-		// Close the scanner and input file
+
+		// never forget to close
 		scanner.close();
 		inputFile.close();
 	}
+
 }
